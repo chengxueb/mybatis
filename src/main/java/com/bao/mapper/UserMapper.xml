@@ -1,6 +1,23 @@
 <?xml version="1.0" encoding="UTF-8" ?>  
 <!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
 <mapper namespace="com.bao.mapper.UserMapper">
+	<resultMap type="com.bao.bean.User" id="userMap">
+		<id column="id" property="id" />
+		<result column="name" property="name" />
+		<result column="age" property="age" />
+		<association property="userInfo" column="id"
+			select="com.bao.mapper.UserInfoMapper.getUserInfoByUserId" javaType="com.bao.bean.UserInfo"></association>
+		<association property="orders" column="id"
+			select="com.bao.mapper.OrderMapper.getOrdersByUserId"></association>
+	</resultMap>
+
+	<select id="getUserByCond" parameterType="map" resultMap="userMap">
+		SELECT
+		id, name, age FROM users WHERE id != #{id} and name = #{name}
+	</select>
+	<select id="getCount" resultType="int">
+		SELECT COUNT(*) FROM users
+	</select>
 	<select id="getUser" parameterType="int" resultType="com.bao.bean.User">
 		select *
 		from users where id=#{id} </select>
@@ -12,4 +29,8 @@
 		INSERT INTO users SET name =
 		#{name}, age = #{age}
 	</insert>
+	<delete id="deleteUser" parameterType="int">
+		DELETE FROM users WHERE id
+		= #{id}
+	</delete>
 </mapper>  
